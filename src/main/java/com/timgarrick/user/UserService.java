@@ -1,4 +1,4 @@
-package service;
+package com.timgarrick.user;
 
 public class UserService {
     private static UserService instance = null;

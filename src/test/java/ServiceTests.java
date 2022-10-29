@@ -1,9 +1,8 @@
+import com.timgarrick.account.AccountService;
+import com.timgarrick.user.UserService;
 import org.junit.jupiter.api.Test;
-import service.AccountService;
-import service.ApplicationService;
-import service.UserService;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 
 public class ServiceTests {
@@ -17,11 +16,5 @@ public class ServiceTests {
     public void createNewAccountServiceClass() {
         AccountService accountService = new AccountService();
         assertNotNull(accountService);
-    }
-
-    @Test
-    public void createNewApplicationServiceClass() {
-        ApplicationService applicationService = new ApplicationService();
-        assertNotNull(applicationService);
     }
 }

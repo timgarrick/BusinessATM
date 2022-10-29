@@ -1,4 +1,6 @@
-package model;
+package com.timgarrick.user;
+
+import com.timgarrick.account.Account;
 
 import java.util.List;
 

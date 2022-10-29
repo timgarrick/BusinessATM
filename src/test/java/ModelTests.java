@@ -1,5 +1,5 @@
-import model.Account;
-import model.User;
+import com.timgarrick.account.Account;
+import com.timgarrick.user.User;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.*;
