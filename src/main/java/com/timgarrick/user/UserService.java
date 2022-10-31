@@ -1,14 +1,27 @@
 package com.timgarrick.user;
 
-public class UserService {
-    private static UserService instance = null;
+import java.util.ArrayList;
+import java.util.List;
 
-    public static UserService getInstance() {
-        return instance;
+public class UserService {
+
+    List<User> userList = new ArrayList<>();
+
+
+    public User createUser(User user) {
+        user.setUserID(userList.size()+1);
+        userList.add(user);
+        return userList.get((userList.size()-1));
+
     }
 
-
-
+    public List<User> getUserList() {
+        if (userList.size()>0) {
+            return userList;
+        } else {
+            return null;
+        }
+    }
 
 
 }

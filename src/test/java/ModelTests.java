@@ -2,15 +2,17 @@ import com.timgarrick.account.Account;
 import com.timgarrick.user.User;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 public class ModelTests {
 
     @Test
     public void createNewUser() {
-        User user = new User();
+        User user = new User("test", "test", "test@test.com");
         assertNotNull(user);
     }
+
+
 
     @Test
     public void createNewAccount() {
