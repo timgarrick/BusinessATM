@@ -3,6 +3,7 @@ package com.timgarrick.application;
 import com.timgarrick.account.AccountLogic;
 import com.timgarrick.account.AccountService;
 import com.timgarrick.user.User;
+import com.timgarrick.user.UserLogic;
 import com.timgarrick.user.UserService;
 
 public class ApplicationService {
@@ -14,7 +15,7 @@ public class ApplicationService {
     public final static UserInterface userInterface = new UserInterface();
 
     public ApplicationService(String bankName) {
-        this.bankName = bankName;
+        ApplicationService.bankName = bankName;
     }
 
     public void run() {
@@ -25,6 +26,8 @@ public class ApplicationService {
         while(applicationIsRunning) {
 
             UserLogic.welcomeUser();
+
+
 
             switch (UserLogic.initialUserSelection()) {
                 case 1 -> UserLogic.loginUser();
@@ -38,7 +41,7 @@ public class ApplicationService {
                 switch (UserLogic.loggedInUserSelection()) {
                     case 1 -> UserLogic.manageUserAccount();
                     case 2 -> AccountLogic.createNewAccount();
-                    case 3 -> UserLogic.manageExistingAccount();
+                    case 3 -> AccountLogic.manageExistingAccount();
                     case 4 -> currentlyLoggedInUser = null;
                     default -> UserInterface.outputString("Unknown menu item, please retry");
                 }

@@ -2,6 +2,7 @@ package com.timgarrick.user;
 
 import com.timgarrick.account.Account;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
@@ -9,12 +10,17 @@ public class User {
     private String username;
     private String password;
     private String email;
-    private List<Account> listOfAccounts;
+    private List<Account> listOfPrimaryAccounts;
+    private List<Account> listOfSecondaryAccounts;
+    private int jointAccountCreationRequest = 0;
+    private int jointAccountDeletionRequest = 0;
 
     public User(String username, String password, String email) {
         this.username = username;
         this.password = password;
         this.email = email;
+        this.listOfPrimaryAccounts = new ArrayList<>();
+        this.listOfSecondaryAccounts = new ArrayList<>();
     }
 
     public int getUserID() {
@@ -49,12 +55,36 @@ public class User {
         this.email = email;
     }
 
-    public List<Account> getListOfAccounts() {
-        return listOfAccounts;
+    public List<Account> getListOfPrimaryAccounts() {
+        return listOfPrimaryAccounts;
     }
 
-    public void setListOfAccounts(List<Account> listOfAccounts) {
-        this.listOfAccounts = listOfAccounts;
+    public List<Account> getListOfSecondaryAccounts() {
+        return listOfSecondaryAccounts;
+    }
+
+    public void setListOfPrimaryAccounts(List<Account> listOfPrimaryAccounts) {
+        this.listOfPrimaryAccounts = listOfPrimaryAccounts;
+    }
+
+    public void setListOfSecondaryAccounts(List<Account> listOfSecondaryAccounts) {
+        this.listOfSecondaryAccounts = listOfSecondaryAccounts;
+    }
+
+    public int getJointAccountCreationRequest() {
+        return jointAccountCreationRequest;
+    }
+
+    public void setJointAccountCreationRequest(int jointAccountCreationRequest) {
+        this.jointAccountCreationRequest = jointAccountCreationRequest;
+    }
+
+    public int getJointAccountDeletionRequest() {
+        return jointAccountDeletionRequest;
+    }
+
+    public void setJointAccountDeletionRequest(int jointAccountDeletionRequest) {
+        this.jointAccountDeletionRequest = jointAccountDeletionRequest;
     }
 }
 

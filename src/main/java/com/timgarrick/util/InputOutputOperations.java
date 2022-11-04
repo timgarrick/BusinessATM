@@ -5,6 +5,7 @@ public interface InputOutputOperations {
     String inputString(String s);
 
     double inputNumber(String s);
+    double inputNumber();
     void outputNumber(String s);
 
 

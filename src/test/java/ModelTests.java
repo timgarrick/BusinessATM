@@ -1,4 +1,5 @@
 import com.timgarrick.account.Account;
+import com.timgarrick.account.AccountType;
 import com.timgarrick.user.User;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +17,7 @@ public class ModelTests {
 
     @Test
     public void createNewAccount() {
-        Account account = new Account();
+        Account account = new Account("Test", AccountType.BUSINESS,new User("test", "test", "test"));
         assertNotNull(account);
     }
 

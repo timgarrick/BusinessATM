@@ -19,7 +19,7 @@ public class UserInterface {
     }
 
 
-    public double inputNumber(String s) {
+    public static double inputNumber(String s) {
         return userInterface.inputNumber(s);
     }
 

@@ -1,11 +1,12 @@
-package com.timgarrick.application;
+package com.timgarrick.user;
 
-import com.timgarrick.user.User;
-import com.timgarrick.user.UserService;
+import com.timgarrick.account.AccountService;
+import com.timgarrick.application.ApplicationService;
+import com.timgarrick.application.UserInterface;
 
 public class UserLogic {
 
-    static void welcomeUser() {
+    public static void welcomeUser() {
 
         UserInterface.outputString("Banking with "
                 + ApplicationService.bankName+ ". Welcome!");
@@ -14,11 +15,44 @@ public class UserLogic {
         } else {
             UserInterface.outputString("You are currently logged in as "
                             + ApplicationService.currentlyLoggedInUser.getUsername());
+
         }
 
+        UserInterface.outputString("");
     }
 
-    static void manageUserAccount() {
+    public static void jointAccountStatusCheckOnLogin()
+    {
+        if(ApplicationService.currentlyLoggedInUser.getJointAccountCreationRequest() > 0 ) {
+            UserInterface.outputString("A user has requested a new account with you as the secondary owner");
+            UserInterface.outputString(AccountService.findAccountByID(ApplicationService.currentlyLoggedInUser.getJointAccountCreationRequest()).toString());
+            UserInterface.outputString("Please choose a selection");
+            UserInterface.outputString("1 - Approve this request");
+            UserInterface.outputString("2 - Decline this request");
+
+            switch((int) UserInterface.inputNumber()){
+                case 1: {
+                    AccountService.findAccountByID(ApplicationService.currentlyLoggedInUser
+                                    .getJointAccountCreationRequest())
+                            .setSecondaryOwner(ApplicationService.currentlyLoggedInUser);
+                    UserService.refreshUserAccountList();
+                    ApplicationService.currentlyLoggedInUser.setJointAccountCreationRequest(0);
+
+                    break;
+                }
+                case 2: {
+                    ApplicationService.currentlyLoggedInUser.setJointAccountCreationRequest(0);
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+        }
+    }
+
+    public static void manageUserAccount() {
         boolean manageUserAccountMenuOpen = true;
 
         while (manageUserAccountMenuOpen) {
@@ -36,7 +70,7 @@ public class UserLogic {
         }
     }
 
-    static int loggedInUserSelection() {
+    public static int loggedInUserSelection() {
         UserInterface.outputString("Please choose a selection");
         UserInterface.outputString("1 - Manage user account");
 
@@ -53,7 +87,7 @@ public class UserLogic {
     static void manageExistingAccount() {
     }
 
-    static int initialUserSelection() {
+    public static int initialUserSelection() {
         UserInterface.outputString("Please choose a selection");
         UserInterface.outputString("1 - Login to user account");
         UserInterface.outputString("2 - Create new account");
@@ -83,14 +117,16 @@ public class UserLogic {
         }
     }
 
-    static boolean loginUser() {
+    public static boolean loginUser() {
         String username = UserInterface.inputString("Please enter your username or ID");
         String password = UserInterface.inputString("Please enter the password for this account");
         if (validateUserAgainstUserList(username, password)) {
             UserInterface.outputString("Logged into account " + ApplicationService.currentlyLoggedInUser.getUsername() + " successfully");
-
+            UserLogic.jointAccountStatusCheckOnLogin();
             return true;
         }
+
+
 
         UserInterface.outputString("Unable to validate your user account.");
         return false;
@@ -117,7 +153,7 @@ public class UserLogic {
 
     }
 
-    static boolean createNewAccount() {
+    public static boolean createNewAccount() {
         String newUsername = UserInterface.inputString("Enter the username");
 
         if(UserService.findUser(newUsername) != null) {
@@ -125,25 +161,17 @@ public class UserLogic {
             return false;
         }
 
-
         String newUseremail = UserInterface.inputString("Enter the email address");
         String newPassword1 = UserInterface.inputString("Enter the password for this account");
         String newPassword2 = UserInterface.inputString("Enter the password again");
 
         if (newPassword1.equals(newPassword2)) {
-
             UserService.createUser(new User(newUsername, newPassword1, newUseremail));
             UserInterface.outputString("User " + newUsername + " successfully created");
             return true;
-
         } else {
             UserInterface.outputString("Passwords do not match. Please try again.");
             return false;
-
         }
-
-
     }
-
-
 }

@@ -13,13 +13,6 @@ public class ConsoleController implements InputOutputOperations {
 
     public String inputString(String s) {
         outputString(s);
-/*        while(!scanner.hasNext())
-        {
-            outputString(s);
-            scanner.next();
-        }*/
-
-
         return scanner.nextLine();
     }
 
@@ -27,7 +20,6 @@ public class ConsoleController implements InputOutputOperations {
         return scanner.nextLine();
     }
 
-    @Override
     public double inputNumber(String s) {
         outputString(s);
         return inputNumber();
