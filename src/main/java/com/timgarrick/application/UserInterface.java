@@ -3,14 +3,14 @@ package com.timgarrick.application;
 import com.timgarrick.util.ConsoleController;
 
 public class UserInterface {
-    ConsoleController userInterface = new ConsoleController();
+    static ConsoleController userInterface = new ConsoleController();
 
 
-    public void outputString(String s) {
+    public static void outputString(String s) {
         userInterface.outputString(s);
     }
 
-    public String inputString(String s) {
+    public static String inputString(String s) {
         return userInterface.inputString(s);
     }
 
@@ -23,7 +23,7 @@ public class UserInterface {
         return userInterface.inputNumber(s);
     }
 
-    public double inputNumber() {
+    public static double inputNumber() {
         return userInterface.inputNumber();
     }
 

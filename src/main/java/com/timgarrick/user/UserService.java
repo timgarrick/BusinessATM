@@ -5,17 +5,17 @@ import java.util.List;
 
 public class UserService {
 
-    List<User> userList = new ArrayList<>();
+    static List<User> userList = new ArrayList<>();
 
 
-    public User createUser(User user) {
+    public static User createUser(User user) {
         user.setUserID(userList.size()+1);
         userList.add(user);
         return userList.get((userList.size()-1));
 
     }
 
-    public List<User> getUserList() {
+    public static List<User> getUserList() {
         if (userList.size()>0) {
             return userList;
         } else {
@@ -23,7 +23,7 @@ public class UserService {
         }
     }
 
-    public User findUser(String name) {
+    public static User findUser(String name) {
         for (User user: userList) {
             if (user.getUsername().equalsIgnoreCase(name)) {
                 return user;
