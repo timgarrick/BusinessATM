@@ -13,16 +13,34 @@ public class ConsoleController implements InputOutputOperations {
 
     public String inputString(String s) {
         outputString(s);
-        while(!scanner.hasNext())
+/*        while(!scanner.hasNext())
         {
             outputString(s);
-        }
+            scanner.next();
+        }*/
+
+
+        return scanner.nextLine();
+    }
+
+    public String inputString() {
         return scanner.nextLine();
     }
 
     @Override
     public double inputNumber(String s) {
-        return 0;
+        outputString(s);
+        return inputNumber();
+    }
+
+    public double inputNumber() {
+        while(!scanner.hasNextInt()){
+            outputString("Number not recognised");
+            scanner.next();
+        }
+        int inputValue = scanner.nextInt();
+        scanner.nextLine();
+        return inputValue;
     }
 
     @Override

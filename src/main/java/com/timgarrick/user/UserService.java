@@ -23,5 +23,14 @@ public class UserService {
         }
     }
 
+    public User findUser(String name) {
+        for (User user: userList) {
+            if (user.getUsername().equalsIgnoreCase(name)) {
+                return user;
+            }
+        }
+
+        return null;
+    }
 
 }

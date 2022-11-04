@@ -41,4 +41,5 @@ public class ServiceTests {
 
         assertEquals(totalUsersCreated, lastUserUserID);
     }
+
 }
