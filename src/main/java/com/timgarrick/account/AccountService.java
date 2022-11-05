@@ -6,10 +6,10 @@ import java.util.List;
 public class AccountService {
     private static List<Account> allAccounts = new ArrayList<>();
 
-    static boolean createAccount(Account account) {
+    public static Account createAccount(Account account) {
         account.setAccountID(allAccounts.size()+1);
         allAccounts.add(account);
-        return true;
+        return allAccounts.get(allAccounts.size()-1);
     }
 
     public static List<Account> getAllAccounts() {

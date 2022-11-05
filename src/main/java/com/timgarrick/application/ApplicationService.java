@@ -20,9 +20,6 @@ public class ApplicationService {
 
     public void run() {
 
-        userService.createUser(new User("Test", "test", "test"));
-        userService.createUser(new User("TeSt2", "test", "test"));
-
         while(applicationIsRunning) {
 
             UserLogic.welcomeUser();

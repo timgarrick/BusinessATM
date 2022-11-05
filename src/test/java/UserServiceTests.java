@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 
-public class ServiceTests {
+public class UserServiceTests {
 
     private UserService userService = new UserService();
     private AccountService accountService = new AccountService();
@@ -41,5 +41,7 @@ public class ServiceTests {
 
         assertEquals(totalUsersCreated, lastUserUserID);
     }
+
+
 
 }
