@@ -54,24 +54,25 @@ public class UserLogic {
 
     public static void manageUserAccount() {
         boolean manageUserAccountMenuOpen = true;
+        String manageUserAccountString = "Change password#Change email address";
 
         while (manageUserAccountMenuOpen) {
-            UserInterface.outputString("Please choose a selection");
-            UserInterface.outputString("1 - Change password");
-            UserInterface.outputString("2 - Change email address");
-            UserInterface.outputString("3 - Exit to main menu");
 
-            switch ((int) UserInterface.inputNumber()) {
+            switch (UserInterface.userOptionSelection(manageUserAccountString)) {
+                case 0 -> manageUserAccountMenuOpen = false;
                 case 1 -> setUserPassword();
                 case 2 -> setUserEmail();
-                case 3 -> manageUserAccountMenuOpen = false;
             }
 
         }
     }
 
     public static int loggedInUserSelection() {
-        UserInterface.outputString("Please choose a selection");
+        String loggedInUserSelectionString = "Manage user account#Create new account#Manage Existing Accounts";
+
+        return UserInterface.userOptionSelection(loggedInUserSelectionString);
+/*
+                UserInterface.outputString("Please choose a selection");
         UserInterface.outputString("1 - Manage user account");
 
         UserInterface.outputString("2 - Create new account");
@@ -80,7 +81,7 @@ public class UserLogic {
         UserInterface.outputString("4 - Log out and exit to main menu");
         UserInterface.outputString("5 - Quit Application");
 
-        return (int) UserInterface.inputNumber();
+        return (int) UserInterface.inputNumber();*/
 
     }
 
@@ -88,14 +89,10 @@ public class UserLogic {
     }
 
     public static int initialUserSelection() {
-        UserInterface.outputString("Please choose a selection");
-        UserInterface.outputString("1 - Login to user account");
-        UserInterface.outputString("2 - Create new account");
-        UserInterface.outputString("3 - Quit application");
+        String initialUserSelectionString = "Login to user account#Create new user account";
 
-        //userInterface.inputNumber("");
+        return UserInterface.userOptionSelection(initialUserSelectionString);
 
-        return (int) UserInterface.inputNumber();
     }
 
     private static void setUserEmail() {
@@ -105,7 +102,8 @@ public class UserLogic {
     }
 
     private static void setUserPassword() {
-        UserInterface.outputString("Your current email address is " + ApplicationService.currentlyLoggedInUser.getPassword());
+        //this needs to be hashed and input password compared to stored hash password
+        UserInterface.outputString("Your current password is: " + ApplicationService.currentlyLoggedInUser.getPassword());
         String password1 = UserInterface.inputString("Enter new password");
         String password2 = UserInterface.inputString("Enter password again");
 
@@ -126,8 +124,6 @@ public class UserLogic {
             return true;
         }
 
-
-
         UserInterface.outputString("Unable to validate your user account.");
         return false;
 
@@ -135,7 +131,9 @@ public class UserLogic {
 
     private static boolean validateUserAgainstUserList(String username, String password) {
 
-
+        if (UserService.getUserList() == null) {
+            return false;
+        }
 
         for (User user : UserService.getUserList())
         {
@@ -153,7 +151,7 @@ public class UserLogic {
 
     }
 
-    public static boolean createNewAccount() {
+    public static boolean createNewUserAccount() {
         String newUsername = UserInterface.inputString("Enter the username");
 
         if(UserService.findUser(newUsername) != null) {

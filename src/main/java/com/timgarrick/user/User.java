@@ -75,6 +75,10 @@ public class User {
         return jointAccountCreationRequest;
     }
 
+    public void setJointAccountCreationRequest(Account jointAccountCreationRequest) {
+        this.jointAccountCreationRequest = jointAccountCreationRequest.getAccountID();
+    }
+
     public void setJointAccountCreationRequest(int jointAccountCreationRequest) {
         this.jointAccountCreationRequest = jointAccountCreationRequest;
     }

@@ -2,6 +2,8 @@ package com.timgarrick.application;
 
 import com.timgarrick.util.ConsoleController;
 
+import java.util.List;
+
 public class UserInterface {
     static ConsoleController userInterface = new ConsoleController();
 
@@ -25,6 +27,18 @@ public class UserInterface {
 
     public static double inputNumber() {
         return userInterface.inputNumber();
+    }
+
+    public static int userOptionSelection(String s) {
+
+        return userInterface.userOptionSelection(s);
+
+    }
+
+    public static int userOptionSelection(List<String> list) {
+
+        return userInterface.userOptionSelection(list);
+
     }
 
 

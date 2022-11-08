@@ -1,6 +1,10 @@
 package com.timgarrick.account;
 
+import com.timgarrick.account.transaction.Transaction;
 import com.timgarrick.user.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Account {
     private int AccountID;
@@ -9,13 +13,17 @@ public class Account {
     private User primaryOwner;
     private User secondaryOwner;
     private double balance;
+    private List<Transaction> accountTransactions;
 
     public Account(String accountName, AccountType accountType, User primaryUser) {
         this.primaryOwner = primaryUser;
         this.accountName = accountName;
         this.accountType = accountType;
         this.balance = 0;
+        this.accountTransactions = new ArrayList<>();
     }
+
+
 
     public int getAccountID() {
         return AccountID;
@@ -61,9 +69,31 @@ public class Account {
         return balance;
     }
 
+    public double getBalanceIncludingOverdraft() {
+        return accountType.getAccountOverdraft() + getBalance();
+    }
+
     public void setBalance(double balance) {
         this.balance = balance;
     }
+
+    public List<Transaction> getAccountTransactions() {
+        return accountTransactions;
+    }
+
+    public void setAccountTransactions(List<Transaction> accountTransactions) {
+        this.accountTransactions = accountTransactions;
+    }
+
+/*    public void updateBalance() {
+        for (Transaction transaction:accountTransactions) {
+
+            if (transaction.getSourceAccount().getAccountID() == this.AccountID)) {
+                balance+= transaction.getAccountTransaction();
+            }
+
+        }
+    }*/
 
     @Override
     public String toString() {
@@ -80,5 +110,9 @@ public class Account {
                 ", Primary Owner: " + primaryOwner.getUsername() +
                 ", Secondary Owner: " + secondaryOwnerName +
                 ", Balance: " + balance;
+    }
+
+    public void updateBalanceAfterTransaction() {
+        this.balance += accountTransactions.get(accountTransactions.size()-1).getAccountTransaction();
     }
 }

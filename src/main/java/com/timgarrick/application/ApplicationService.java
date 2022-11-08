@@ -12,7 +12,7 @@ public class ApplicationService {
     private boolean applicationIsRunning = true;
     final static UserService userService = new UserService();
     final static AccountService accountService = new AccountService();
-    public final static UserInterface userInterface = new UserInterface();
+    final static UserInterface userInterface = new UserInterface();
 
     public ApplicationService(String bankName) {
         ApplicationService.bankName = bankName;
@@ -20,31 +20,40 @@ public class ApplicationService {
 
     public void run() {
 
+        //Need to create an ATM entity to maintain transaction preservance
+
+        User tim = new User("tim", "tim", "tim");
+        User roya = new User("roya", "roya", "roya");
+/*        Account testJoint1 = new Account("testJoint1",AccountType.CLIENT,tim);
+        Account testAccount2 = new Account("testAccount2",AccountType.CLIENT,tim);
+        Account testAccount3 = new Account("testAccount3",AccountType.CLIENT,tim);*/
+
+        UserService.createUser(tim);
+        UserService.createUser(roya);
+
+/*        AccountService.createAccount(testJoint1);
+        AccountService.createAccount(testAccount2);
+        AccountService.createAccount(testAccount3);*/
+
+
         while(applicationIsRunning) {
 
             UserLogic.welcomeUser();
 
-
-
             switch (UserLogic.initialUserSelection()) {
+                case 0 -> applicationIsRunning = false;
                 case 1 -> UserLogic.loginUser();
-                case 2 -> UserLogic.createNewAccount();
-                case 3 -> applicationIsRunning = false;
-                default -> userInterface.outputString("Unknown menu item, please retry");
+                case 2 -> UserLogic.createNewUserAccount();
             }
 
             while(currentlyLoggedInUser != null)
             {
                 switch (UserLogic.loggedInUserSelection()) {
+                    case 0 -> currentlyLoggedInUser = null;
                     case 1 -> UserLogic.manageUserAccount();
                     case 2 -> AccountLogic.createNewAccount();
                     case 3 -> AccountLogic.manageExistingAccount();
-                    case 4 -> currentlyLoggedInUser = null;
-                    default -> UserInterface.outputString("Unknown menu item, please retry");
                 }
-
-
-
             }
         }
     }

@@ -17,4 +17,9 @@ public class ApplicationTests {
 
     }
 
+    /*@Test
+    public void createUserOptionListWith5OptionsAndReturn5WhenOption5IsChosen() {
+        assertEquals(5, UserInterface.userOptionSelection("1#2#3#4#5#"));
+    }*/
+
 }
