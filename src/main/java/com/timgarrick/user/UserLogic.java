@@ -3,6 +3,7 @@ package com.timgarrick.user;
 import com.timgarrick.account.AccountService;
 import com.timgarrick.application.ApplicationService;
 import com.timgarrick.application.UserInterface;
+import com.timgarrick.user.usermessage.UserMessage;
 
 public class UserLogic {
 
@@ -21,8 +22,103 @@ public class UserLogic {
         UserInterface.outputString("");
     }
 
-    public static void jointAccountStatusCheckOnLogin()
+    public static void checkUserMessageFlags()
     {
+
+        for (UserMessage activeMessage:ApplicationService.currentlyLoggedInUser.getListOfUserMessages()) {
+
+            switch(activeMessage.getUserMessageType()) {
+
+                case JOINT_ACCOUNT_CREATION_REQUEST -> {
+
+                    UserInterface.outputString("Joint account request for " + activeMessage.getAccount().getAccountName()
+                            + " from " + activeMessage.getAccount().getPrimaryOwner() + " ("
+                            + activeMessage.getAccount().getPrimaryOwner().getUsername() + ") " + " at "
+                            + activeMessage.getMessageCreated());
+
+                    if(!activeMessage.getContextMessage().isEmpty()) {
+                        UserInterface.outputString(activeMessage.getContextMessage());
+                    }
+
+                    switch (UserInterface.userOptionSelection("Accept request#Decline request#Ignore request")) {
+                        case 1 -> {
+                            activeMessage.getAccount().setSecondaryOwner(ApplicationService.currentlyLoggedInUser);
+                            UserService.refreshUserAccountList();
+                            activeMessage.setActive(false);
+                        }
+                        case 2 -> {
+                            activeMessage.setActive(false);
+                        }
+                        default -> {
+                            break;
+                        }
+                    }
+
+
+                }
+                case JOINT_ACCOUNT_DELETION_REQUEST -> {
+
+                    if (ApplicationService.currentlyLoggedInUser.equals(activeMessage.getAccount().getSecondaryOwner())) {
+
+                        UserInterface.outputString("Joint account deletion requested for " + activeMessage.getAccount().getAccountName()
+                                + " by " + activeMessage.getAccount().getPrimaryOwner() + " ("
+                                + activeMessage.getAccount().getPrimaryOwner().getUsername() + ") " + " at "
+                                + activeMessage.getMessageCreated());
+
+                        if (!activeMessage.getContextMessage().isEmpty()) {
+                            UserInterface.outputString(activeMessage.getContextMessage());
+                        }
+
+                        switch (UserInterface.userOptionSelection("Accept request#Decline request#Ignore request")) {
+                            case 1 -> {
+                                //need to validate account before we can delete
+                                AccountService.deleteAccount(activeMessage.getAccount());
+                                activeMessage.setActive(false);
+                            }
+                            case 2 -> {
+                                activeMessage.setActive(false);
+                            }
+                            default -> {
+                                break;
+                            }
+                        }
+                    }
+
+
+                }
+                case JOINT_ACCOUNT_TRANSACTION_REQUEST -> {
+                    //add logic to accept or deny transaction
+                }
+            }
+
+            if(activeMessage.getTransaction() != null) {
+                UserInterface.outputString("Joint account request for " + activeMessage.getAccount().getAccountName()
+                        + " from " + activeMessage.getAccount().getPrimaryOwner() + " ("
+                        + activeMessage.getAccount().getPrimaryOwner().getUsername() + ") " + " at "
+                        + activeMessage.getMessageCreated());
+
+                if(!activeMessage.getContextMessage().isEmpty()) {
+                    UserInterface.outputString(activeMessage.getContextMessage());
+                }
+
+                switch (UserInterface.userOptionSelection("Accept request#Decline request#Ignore request")) {
+                    case 1 -> {
+                        activeMessage.getAccount().setSecondaryOwner(ApplicationService.currentlyLoggedInUser);
+                        UserService.refreshUserAccountList();
+                        activeMessage.setActive(false);
+                    }
+                    case 2 -> {
+                        activeMessage.setActive(false);
+                    }
+                    default -> {
+                        break;
+                    }
+                }
+
+            }
+
+        }
+
         if(ApplicationService.currentlyLoggedInUser.getJointAccountCreationRequest() > 0 ) {
             UserInterface.outputString("A user has requested a new account with you as the secondary owner");
             UserInterface.outputString(AccountService.findAccountByID(ApplicationService.currentlyLoggedInUser.getJointAccountCreationRequest()).toString());
@@ -116,11 +212,15 @@ public class UserLogic {
     }
 
     public static boolean loginUser() {
+        //LoginBox loginBox = new LoginBox();
+        //loginBox.showWindow();
+
+
         String username = UserInterface.inputString("Please enter your username or ID");
         String password = UserInterface.inputString("Please enter the password for this account");
         if (validateUserAgainstUserList(username, password)) {
             UserInterface.outputString("Logged into account " + ApplicationService.currentlyLoggedInUser.getUsername() + " successfully");
-            UserLogic.jointAccountStatusCheckOnLogin();
+            UserLogic.checkUserMessageFlags();
             return true;
         }
 
@@ -129,7 +229,7 @@ public class UserLogic {
 
     }
 
-    private static boolean validateUserAgainstUserList(String username, String password) {
+    public static boolean validateUserAgainstUserList(String username, String password) {
 
         if (UserService.getUserList() == null) {
             return false;

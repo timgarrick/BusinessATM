@@ -3,6 +3,7 @@ package com.timgarrick.user;
 import com.timgarrick.account.Account;
 import com.timgarrick.account.AccountService;
 import com.timgarrick.application.ApplicationService;
+import com.timgarrick.user.usermessage.UserMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +60,21 @@ public class UserService {
 
         ApplicationService.currentlyLoggedInUser.setListOfPrimaryAccounts(newPrimaryAccountList);
         ApplicationService.currentlyLoggedInUser.setListOfSecondaryAccounts(newSecondaryAccountList);
+
+    }
+
+    public static List<UserMessage> getFlaggedMessages() {
+        List<UserMessage> flaggedMessages = new ArrayList<>();
+
+        for (UserMessage userMessage:ApplicationService.currentlyLoggedInUser.getListOfUserMessages())
+        {
+            if (userMessage.isActive())
+            {
+                flaggedMessages.add(userMessage);
+            }
+        }
+
+        return flaggedMessages;
 
     }
 

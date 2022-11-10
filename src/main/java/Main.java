@@ -6,6 +6,6 @@ public class Main {
         ApplicationService BusinessATM = new ApplicationService("Test Bank");
         BusinessATM.run();
 
-
     }
 }
+

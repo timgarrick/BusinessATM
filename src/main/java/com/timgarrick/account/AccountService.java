@@ -4,6 +4,7 @@ import com.timgarrick.account.transaction.Transaction;
 import com.timgarrick.account.transaction.TransactionService;
 import com.timgarrick.application.ApplicationService;
 import com.timgarrick.application.UserInterface;
+import com.timgarrick.user.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ public class AccountService {
 
     public static void deleteAccount(Account account) {
         allAccounts.remove(account);
+        UserService.refreshUserAccountList();
     }
 
 

@@ -14,31 +14,43 @@ public class AccountLogic {
 
 
     public static void createNewAccount() {
+
         if (ApplicationService.currentlyLoggedInUser.getListOfPrimaryAccounts().size() < AccountType.values().length) {
 
-            String name = UserInterface.inputString("Enter a name for this account: ");
-            UserInterface.outputString("Enter the type of account: ");
-            int accountTypeCounter = 1;
+            List<AccountType> listOfAvailableAccountsTypes = new ArrayList<>();
+            List<Account> listOfUsersPrimaryAccounts = new ArrayList<>();
+
 
             for (AccountType accountType:AccountType.values()) {
-                UserInterface.outputString(accountTypeCounter + " - " + accountType.getAccountName());
-                accountTypeCounter++;
+                System.out.println("Looping through account types, should be 3 times" + accountType.getAccountName());
+
+                listOfAvailableAccountsTypes.add(accountType);
+
+                //loop through all accounts
+                for (Account account:ApplicationService.currentlyLoggedInUser.getListOfPrimaryAccounts()) {
+                    if (account.getAccountType().equals(accountType)) {
+                        System.out.println("Account type in list of user accounts matched");
+                        listOfAvailableAccountsTypes.remove(accountType);
+                    }
+                }
+
             }
 
-/*            while(!ApplicationLogic.validInputBoundry((int) UserInterface.inputNumber(),1, AccountType.values().length)) {
+            StringBuilder availableAccountTypeString = new StringBuilder();
 
-            }*/
-            
-            AccountType accountType = null;
-            
-            switch ((int) UserInterface.inputNumber()) {
-                case 1 -> accountType = AccountType.BUSINESS;
-                case 2 -> accountType = AccountType.CLIENT;
-                case 3 -> accountType = AccountType.COMMUNITY;
-                default -> UserInterface.outputString("Account type not recognised");
+
+            for (AccountType availableAccountType: listOfAvailableAccountsTypes) {
+                availableAccountTypeString.append(availableAccountType.getAccountName()
+                                            + " (Overdraft: £" + availableAccountType.getAccountOverdraft() + ")#");
             }
 
-            AccountService.createAccount(new Account(name, accountType, ApplicationService.currentlyLoggedInUser));
+            UserInterface.outputString("Choose a type of account");
+            int accountSelection = UserInterface.userOptionSelection(availableAccountTypeString.toString());
+
+            String accountName = UserInterface.inputString("Enter a name for this account: ");
+
+            AccountService.createAccount(new Account(accountName, listOfAvailableAccountsTypes.get(accountSelection-1),
+                                            ApplicationService.currentlyLoggedInUser));
             UserService.refreshUserAccountList();
 
         } else {
@@ -74,8 +86,7 @@ public class AccountLogic {
 
 
         for (Account account : ApplicationService.currentlyLoggedInUser.getListOfPrimaryAccounts()) {
-            accountListNames.add(account.getAccountID() + " - "
-                    + account.getAccountName() + " ( "
+            accountListNames.add(account.getAccountName() + " ( "
                     + account.getAccountType().getAccountName() + ", primary), total balance including overdraft: £"
                     + (account.getBalance() + account.getAccountType().getAccountOverdraft()));
 
@@ -85,8 +96,7 @@ public class AccountLogic {
 
 
         for (Account account : ApplicationService.currentlyLoggedInUser.getListOfSecondaryAccounts()) {
-            accountListNames.add(account.getAccountID() + " - "
-                        + account.getAccountName() + " ( "
+            accountListNames.add(account.getAccountName() + " ( "
                         + account.getAccountType().getAccountName() + ", secondary), total balance including overdraft: £"
                         + (account.getBalance() + account.getAccountType().getAccountOverdraft()));
 
@@ -142,13 +152,13 @@ public class AccountLogic {
                                         + account.getSecondaryOwner().getEmail() + ") has been sent");
         }
 
-        String accountToBeDeleted = UserInterface.inputString("Please type the name of the account to confirm deletion");
+        String accountToBeDeleted = UserInterface.inputString("Please type \"Yes\" to confirm deletion");
 
-        if (accountToBeDeleted.equals(account.getAccountName())) {
+        if (accountToBeDeleted.equalsIgnoreCase("yes")) {
             AccountService.deleteAccount(account);
             return true;
         } else {
-            UserInterface.outputString("Name does not match. Account has not been deleted");
+            UserInterface.outputString("Deletion request cancelled");
             return false;
         }
     }
@@ -232,6 +242,13 @@ public class AccountLogic {
                     return true;
                 }
             }
+        } else {
+
+            TransactionService.createNewWithdrawTransaction(ApplicationService.currentlyLoggedInUser,account,1-withdrawAmount);
+            UserInterface.outputString("£" + withdrawAmount + " withdrawn from account. Current balance: £"
+                                        + account.getBalance());
+            return true;
+
         }
 
         return false;

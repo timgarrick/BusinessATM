@@ -64,6 +64,10 @@ public class Transaction {
         return accountTransactionDate;
     }
 
+    public TransactionType getTransactionType() {
+        return transactionType;
+    }
+
     @Override
     public String toString() {
         return "Transaction{" +

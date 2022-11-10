@@ -1,17 +1,20 @@
 package com.timgarrick.user;
 
 import com.timgarrick.account.Account;
+import com.timgarrick.user.usermessage.UserMessage;
+import com.timgarrick.util.ModelOutput;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class User {
+public class User implements ModelOutput {
     private int userID;
     private String username;
     private String password;
     private String email;
     private List<Account> listOfPrimaryAccounts;
     private List<Account> listOfSecondaryAccounts;
+    private List<UserMessage> listOfUserMessages;
     private int jointAccountCreationRequest = 0;
     private int jointAccountDeletionRequest = 0;
 
@@ -21,6 +24,7 @@ public class User {
         this.email = email;
         this.listOfPrimaryAccounts = new ArrayList<>();
         this.listOfSecondaryAccounts = new ArrayList<>();
+        this.listOfUserMessages = new ArrayList<>();
     }
 
     public int getUserID() {
@@ -63,6 +67,10 @@ public class User {
         return listOfSecondaryAccounts;
     }
 
+    public List<UserMessage> getListOfUserMessages() {
+        return listOfUserMessages;
+    }
+
     public void setListOfPrimaryAccounts(List<Account> listOfPrimaryAccounts) {
         this.listOfPrimaryAccounts = listOfPrimaryAccounts;
     }
@@ -89,6 +97,11 @@ public class User {
 
     public void setJointAccountDeletionRequest(int jointAccountDeletionRequest) {
         this.jointAccountDeletionRequest = jointAccountDeletionRequest;
+    }
+
+    @Override
+    public String userSelectionOutput() {
+        return "ID: " + this.getUserID() + ", Username " + getUserID();
     }
 }
 

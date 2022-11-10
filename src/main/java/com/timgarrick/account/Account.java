@@ -2,11 +2,13 @@ package com.timgarrick.account;
 
 import com.timgarrick.account.transaction.Transaction;
 import com.timgarrick.user.User;
+import com.timgarrick.util.ModelOutput;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class Account {
+public class Account implements ModelOutput {
     private int AccountID;
     private String accountName;
     private AccountType accountType;
@@ -14,6 +16,7 @@ public class Account {
     private User secondaryOwner;
     private double balance;
     private List<Transaction> accountTransactions;
+    private Date dateCreated;
 
     public Account(String accountName, AccountType accountType, User primaryUser) {
         this.primaryOwner = primaryUser;
@@ -21,6 +24,7 @@ public class Account {
         this.accountType = accountType;
         this.balance = 0;
         this.accountTransactions = new ArrayList<>();
+        this.dateCreated = new Date();
     }
 
 
@@ -109,10 +113,17 @@ public class Account {
                 ", Type: " + accountType.getAccountName() +
                 ", Primary Owner: " + primaryOwner.getUsername() +
                 ", Secondary Owner: " + secondaryOwnerName +
-                ", Balance: " + balance;
+                ", Balance: £" + balance +
+                ", Overdraft: £" + getAccountType().getAccountOverdraft();
     }
 
     public void updateBalanceAfterTransaction() {
+
         this.balance += accountTransactions.get(accountTransactions.size()-1).getAccountTransaction();
+    }
+
+    @Override
+    public String userSelectionOutput() {
+        return "Account name: " + this.getAccountName() + ", account type: " + this.accountType.getAccountName();
     }
 }
