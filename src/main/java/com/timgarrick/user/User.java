@@ -103,6 +103,10 @@ public class User implements ModelOutput {
     public String userSelectionOutput() {
         return "ID: " + this.getUserID() + ", Username " + getUserID();
     }
+
+    public String friendlyName() {
+        return this.getUsername() + "(" + this.getEmail() + ")";
+    }
 }
 
 //**user** <long userid, string username, string password, string email address, account ListOfAccounts>

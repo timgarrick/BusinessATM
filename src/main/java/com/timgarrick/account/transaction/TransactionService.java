@@ -1,6 +1,7 @@
 package com.timgarrick.account.transaction;
 
 import com.timgarrick.account.Account;
+import com.timgarrick.application.UserInterface;
 import com.timgarrick.user.User;
 
 import java.util.ArrayList;
@@ -11,44 +12,65 @@ public class TransactionService {
     private static final List<Transaction> allTransactionList = new ArrayList<>();
 
     public static Transaction createNewTransferTransaction(User transactionOwner,
-                                                           Account sourceAccount, Account targetAccount, double transaction) {
+                                                           Account sourceAccount,
+                                                           Account targetAccount,
+                                                           double transaction,
+                                                           boolean pending) {
 
-        Transaction newTransaction = new Transaction(allTransactionList,
-                sourceAccount, targetAccount, transactionOwner, transaction, TransactionType.TRANSFER, true);
+        Transaction transferTransaction = new Transaction(allTransactionList,
+                sourceAccount, targetAccount, transactionOwner, transaction, TransactionType.TRANSFER, pending);
 
 
-        allTransactionList.add(newTransaction);
-        sourceAccount.getAccountTransactions().add(newTransaction);
-        sourceAccount.updateBalanceAfterTransaction();
-        targetAccount.getAccountTransactions().add(newTransaction);
-        targetAccount.updateBalanceAfterTransaction();
-
-        return newTransaction;
+        return confirmTransaction(transferTransaction);
 
     }
 
 
-    public static void createNewDepositTransaction(User transactionOwner,
-                                                   Account targetAccount,
-                                                   double transaction) {
-        Transaction depositTransaction = new Transaction(allTransactionList, null, targetAccount,
-                                                        transactionOwner, transaction, TransactionType.DEPOSIT, true);
+    public static Transaction createNewDepositTransaction(User transactionOwner,
+                                                          Account targetAccount,
+                                                          double transaction,
+                                                          boolean pending) {
 
-        allTransactionList.add(depositTransaction);
-        targetAccount.getAccountTransactions().add(depositTransaction);
-        targetAccount.updateBalanceAfterTransaction();
+        Transaction depositTransaction = new Transaction(allTransactionList,null, targetAccount,
+                                                        transactionOwner, transaction, TransactionType.DEPOSIT,false);
 
+
+        return confirmTransaction(depositTransaction);
     }
 
-    public static void createNewWithdrawTransaction(User transactionOwner,
+    public static Transaction createNewWithdrawTransaction(User transactionOwner,
                                                    Account sourceAccount,
-                                                   double transaction) {
+                                                   double transaction, boolean pending) {
+
+
         Transaction withdrawTransaction = new Transaction(allTransactionList, sourceAccount, null,
-                transactionOwner, transaction, TransactionType.WITHDRAWAL, false);
+                transactionOwner, transaction, TransactionType.WITHDRAWAL, pending);
 
-        allTransactionList.add(withdrawTransaction);
-        sourceAccount.getAccountTransactions().add(withdrawTransaction);
-        sourceAccount.updateBalanceAfterTransaction();
+        return confirmTransaction(withdrawTransaction);
+    }
 
+    public static Transaction confirmTransaction(Transaction transaction) {
+
+        if (!transaction.isPending()){
+
+            if (transaction.getSourceAccount() != null ) {
+                transaction.getSourceAccount().getAccountTransactions().add(transaction);
+                transaction.getSourceAccount().updateBalanceAfterTransaction();
+            }
+
+            if (transaction.getTargetAccount() != null ) {
+                transaction.getTargetAccount().getAccountTransactions().add(transaction);
+                transaction.getTargetAccount().updateBalanceAfterTransaction();
+            }
+
+            allTransactionList.add(transaction);
+
+        } else {
+
+            UserInterface.outputString("Unable to complete transaction "
+                    + transaction.getTransactionID() + ", transaction is pending");
+        }
+
+        return transaction;
     }
 }

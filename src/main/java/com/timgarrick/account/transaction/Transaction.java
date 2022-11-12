@@ -7,14 +7,14 @@ import java.util.Date;
 import java.util.List;
 
 public class Transaction {
-    private final long transactionID;
+    private final int transactionID;
     private final Account sourceAccount;
     private final Account targetAccount;
     private final User transactionOwner;
     private final double accountTransaction;
     private final Date accountTransactionDate;
     private final TransactionType transactionType;
-    private final boolean completedTransaction;
+    private boolean pending;
 
     public Transaction(List<Transaction> accountTransactionList,
                        Account sourceAccount,
@@ -22,10 +22,10 @@ public class Transaction {
                        User primaryUser,
                        double accountTransaction,
                        TransactionType transactionType,
-                       boolean completedTransaction) {
+                       boolean pending) {
 
         this.transactionOwner = primaryUser;
-        this.completedTransaction = completedTransaction;
+        this.pending = pending;
 
         if (accountTransactionList == null) {
             this.transactionID = 1;
@@ -40,7 +40,7 @@ public class Transaction {
         this.accountTransactionDate = new Date();
     }
 
-    public long getTransactionID() {
+    public int getTransactionID() {
         return transactionID;
     }
 
@@ -68,15 +68,20 @@ public class Transaction {
         return transactionType;
     }
 
+    public boolean isPending() {
+        return pending;
+    }
+
     @Override
     public String toString() {
-        return "Transaction{" +
-                "transactionID=" + transactionID +
-                ", sourceAccount=" + sourceAccount +
-                ", targetAccount=" + targetAccount +
-                ", transactionOwner=" + transactionOwner +
-                ", accountTransaction=" + accountTransaction +
-                ", accountTransactionDate=" + accountTransactionDate +
-                '}';
+        return transactionID + ": " +
+                transactionType.getFriendlyName() + " £" +
+                accountTransaction + " from "+
+                sourceAccount + " to "+
+                targetAccount + ". Transaction requested by "+
+                transactionOwner + " (" +
+                accountTransactionDate + ")";
     }
+
+
 }

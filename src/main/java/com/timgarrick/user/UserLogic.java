@@ -1,6 +1,7 @@
 package com.timgarrick.user;
 
 import com.timgarrick.account.AccountService;
+import com.timgarrick.account.transaction.TransactionService;
 import com.timgarrick.application.ApplicationService;
 import com.timgarrick.application.UserInterface;
 import com.timgarrick.user.usermessage.UserMessage;
@@ -9,8 +10,8 @@ public class UserLogic {
 
     public static void welcomeUser() {
 
-        UserInterface.outputString("Banking with "
-                + ApplicationService.bankName+ ". Welcome!");
+        UserInterface.outputString("Banking with " + ApplicationService.bankName + ". Welcome!");
+
         if (ApplicationService.currentlyLoggedInUser == null) {
             UserInterface.outputString("You are not currently logged in.");
         } else {
@@ -31,8 +32,11 @@ public class UserLogic {
 
                 case JOINT_ACCOUNT_CREATION_REQUEST -> {
 
-                    UserInterface.outputString("Joint account request for " + activeMessage.getAccount().getAccountName()
-                            + " from " + activeMessage.getAccount().getPrimaryOwner() + " ("
+                    //jointAccountRequestMessageText("Joint account creation");
+
+                    UserInterface.outputString("Joint account request for "
+                            + activeMessage.getAccount().getAccountName() + " from "
+                            + activeMessage.getAccount().getPrimaryOwner() + " ("
                             + activeMessage.getAccount().getPrimaryOwner().getUsername() + ") " + " at "
                             + activeMessage.getMessageCreated());
 
@@ -42,8 +46,8 @@ public class UserLogic {
 
                     switch (UserInterface.userOptionSelection("Accept request#Decline request#Ignore request")) {
                         case 1 -> {
-                            activeMessage.getAccount().setSecondaryOwner(ApplicationService.currentlyLoggedInUser);
-                            UserService.refreshUserAccountList();
+                            AccountService.updateSecondaryUser(activeMessage.getAccount(),
+                                                                ApplicationService.currentlyLoggedInUser);
                             activeMessage.setActive(false);
                         }
                         case 2 -> {
@@ -60,8 +64,9 @@ public class UserLogic {
 
                     if (ApplicationService.currentlyLoggedInUser.equals(activeMessage.getAccount().getSecondaryOwner())) {
 
-                        UserInterface.outputString("Joint account deletion requested for " + activeMessage.getAccount().getAccountName()
-                                + " by " + activeMessage.getAccount().getPrimaryOwner() + " ("
+                        UserInterface.outputString("Joint account deletion requested for "
+                                + activeMessage.getAccount().getAccountName() + " by "
+                                + activeMessage.getAccount().getPrimaryOwner() + " ("
                                 + activeMessage.getAccount().getPrimaryOwner().getUsername() + ") " + " at "
                                 + activeMessage.getMessageCreated());
 
@@ -71,8 +76,8 @@ public class UserLogic {
 
                         switch (UserInterface.userOptionSelection("Accept request#Decline request#Ignore request")) {
                             case 1 -> {
-                                //need to validate account before we can delete
                                 AccountService.deleteAccount(activeMessage.getAccount());
+                                UserService.refreshUserAccountList();
                                 activeMessage.setActive(false);
                             }
                             case 2 -> {
@@ -87,65 +92,41 @@ public class UserLogic {
 
                 }
                 case JOINT_ACCOUNT_TRANSACTION_REQUEST -> {
-                    //add logic to accept or deny transaction
+
+                    UserInterface.outputString("Joint account transaction request "
+                            + activeMessage.getAccount().getAccountName() + " by "
+                            + activeMessage.getAccount().getPrimaryOwner() + " ("
+                            + activeMessage.getAccount().getPrimaryOwner().getUsername() + ") " + " at "
+                            + activeMessage.getMessageCreated());
+
+                    if (!activeMessage.getContextMessage().isEmpty()) {
+                        UserInterface.outputString(activeMessage.getContextMessage());
+                    }
+
+                    UserInterface.outputString(activeMessage.getTransaction().toString());
+
+                    switch (UserInterface.userOptionSelection("Accept request#Decline request#Ignore request")) {
+                        case 1 -> {
+                            TransactionService.confirmTransaction(activeMessage.getTransaction());
+                            activeMessage.setActive(false);
+                        }
+                        case 2 -> {
+                            activeMessage.setActive(false);
+                        }
+                        default -> {
+                            break;
+                        }
+                    }
                 }
             }
 
-            if(activeMessage.getTransaction() != null) {
-                UserInterface.outputString("Joint account request for " + activeMessage.getAccount().getAccountName()
-                        + " from " + activeMessage.getAccount().getPrimaryOwner() + " ("
-                        + activeMessage.getAccount().getPrimaryOwner().getUsername() + ") " + " at "
-                        + activeMessage.getMessageCreated());
-
-                if(!activeMessage.getContextMessage().isEmpty()) {
-                    UserInterface.outputString(activeMessage.getContextMessage());
-                }
-
-                switch (UserInterface.userOptionSelection("Accept request#Decline request#Ignore request")) {
-                    case 1 -> {
-                        activeMessage.getAccount().setSecondaryOwner(ApplicationService.currentlyLoggedInUser);
-                        UserService.refreshUserAccountList();
-                        activeMessage.setActive(false);
-                    }
-                    case 2 -> {
-                        activeMessage.setActive(false);
-                    }
-                    default -> {
-                        break;
-                    }
-                }
-
-            }
 
         }
+    }
 
-        if(ApplicationService.currentlyLoggedInUser.getJointAccountCreationRequest() > 0 ) {
-            UserInterface.outputString("A user has requested a new account with you as the secondary owner");
-            UserInterface.outputString(AccountService.findAccountByID(ApplicationService.currentlyLoggedInUser.getJointAccountCreationRequest()).toString());
-            UserInterface.outputString("Please choose a selection");
-            UserInterface.outputString("1 - Approve this request");
-            UserInterface.outputString("2 - Decline this request");
+    private static void jointAccountRequestMessageText(String joint_account_creation) {
 
-            switch((int) UserInterface.inputNumber()){
-                case 1: {
-                    AccountService.findAccountByID(ApplicationService.currentlyLoggedInUser
-                                    .getJointAccountCreationRequest())
-                            .setSecondaryOwner(ApplicationService.currentlyLoggedInUser);
-                    UserService.refreshUserAccountList();
-                    ApplicationService.currentlyLoggedInUser.setJointAccountCreationRequest(0);
 
-                    break;
-                }
-                case 2: {
-                    ApplicationService.currentlyLoggedInUser.setJointAccountCreationRequest(0);
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-        }
     }
 
     public static void manageUserAccount() {

@@ -18,6 +18,8 @@ public class Account implements ModelOutput {
     private List<Transaction> accountTransactions;
     private Date dateCreated;
 
+    private boolean archived;
+
     public Account(String accountName, AccountType accountType, User primaryUser) {
         this.primaryOwner = primaryUser;
         this.accountName = accountName;
@@ -25,6 +27,7 @@ public class Account implements ModelOutput {
         this.balance = 0;
         this.accountTransactions = new ArrayList<>();
         this.dateCreated = new Date();
+        this.archived = false;
     }
 
 
@@ -79,6 +82,10 @@ public class Account implements ModelOutput {
 
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+
+    public void setArchived(boolean archived) {
+        this.archived = archived;
     }
 
     public List<Transaction> getAccountTransactions() {

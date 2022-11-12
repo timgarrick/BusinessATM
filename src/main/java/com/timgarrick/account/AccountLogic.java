@@ -6,6 +6,8 @@ import com.timgarrick.application.ApplicationService;
 import com.timgarrick.application.UserInterface;
 import com.timgarrick.user.User;
 import com.timgarrick.user.UserService;
+import com.timgarrick.user.usermessage.UserMessageService;
+import com.timgarrick.user.usermessage.UserMessageType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -158,7 +160,7 @@ public class AccountLogic {
             AccountService.deleteAccount(account);
             return true;
         } else {
-            UserInterface.outputString("Deletion request cancelled");
+            UserInterface.outputString("Account was not deleted");
             return false;
         }
     }
@@ -198,7 +200,7 @@ public class AccountLogic {
 
         if (transferConfirm.equalsIgnoreCase("yes")) {
             Transaction transferTransaction = TransactionService.createNewTransferTransaction(ApplicationService.currentlyLoggedInUser,
-                                                                                    activeAccount,targetAccount,transferAmount);
+                                                                                    activeAccount,targetAccount,transferAmount, false);
             UserInterface.outputString("Transaction successful. Transaction information: ");
             UserInterface.outputString(activeAccount.toString());
             UserInterface.outputString(targetAccount.toString());
@@ -215,7 +217,7 @@ public class AccountLogic {
         UserInterface.outputString("Active account: " + account.toString());
 
         double deposit = UserInterface.inputNumber("Enter a value to deposit into this account:");
-        TransactionService.createNewDepositTransaction(ApplicationService.currentlyLoggedInUser,account,deposit);
+        TransactionService.createNewDepositTransaction(ApplicationService.currentlyLoggedInUser,account,deposit, false);
         UserInterface.outputString("£" + deposit + " deposited into account. Current balance: £" + account.getBalance());
 
         return true;
@@ -233,26 +235,37 @@ public class AccountLogic {
         }
 
         if (account.getSecondaryOwner() != null) {
-            if (withdrawAmount > totalBalanceIncludingOverdraft / 0.2) {
-                UserInterface.outputString("This is a joint account. To withdraw more than 20% of the total funds, " +
-                                                "you need approval from the secondary owner.");
+            if (withdrawAmount > (totalBalanceIncludingOverdraft / 0.2)) {
+                Transaction pendingTransaction = TransactionService.createNewWithdrawTransaction(
+                        ApplicationService.currentlyLoggedInUser, account,-withdrawAmount,true);
 
-                if(UserInterface.userOptionSelection("Send request to joint owner and continue?") == 1) {
-                    //flag joint owner on login
+                UserInterface.outputString("You will need approval from " + getSecondAccountOwner(account).friendlyName()
+                                            + ") to withdraw more than 20% of the remaining balance from this account. " +
+                                            "Would you like to proceed?");
+
+                if(UserInterface.userOptionSelection("Confirm withdrawal#Cancel request") == 1) {
+                    UserInterface.outputString("A pending transaction has been created with ID: " +
+                            pendingTransaction.getTransactionID() + " and a request will be sent to " +
+                            getSecondAccountOwner(account).getUsername() + " (" +
+                            getSecondAccountOwner(account).getEmail() + ")");
+
+                    String messageString = UserInterface.inputString("Enter a message for this request: ");
+
+                    UserMessageService.createUserMessage(getSecondAccountOwner(account),pendingTransaction,
+                            account,messageString, UserMessageType.JOINT_ACCOUNT_TRANSACTION_REQUEST);
                     return true;
+                } else {
+                    return false;
                 }
             }
-        } else {
-
-            TransactionService.createNewWithdrawTransaction(ApplicationService.currentlyLoggedInUser,account,1-withdrawAmount);
-            UserInterface.outputString("£" + withdrawAmount + " withdrawn from account. Current balance: £"
-                                        + account.getBalance());
-            return true;
-
         }
 
-        return false;
+        TransactionService.createNewWithdrawTransaction(ApplicationService.currentlyLoggedInUser,account,
+                                                -withdrawAmount,false);
 
+        UserInterface.outputString("£" + withdrawAmount + " withdrawn from account. Current balance: £"
+                                    + account.getBalance());
+        return true;
     }
 
 
@@ -284,5 +297,16 @@ public class AccountLogic {
         for (Account account:ApplicationService.currentlyLoggedInUser.getListOfSecondaryAccounts()) {
             UserInterface.outputString(account.toString());
         }
+    }
+
+    private static User getSecondAccountOwner(Account account) {
+
+        if (ApplicationService.currentlyLoggedInUser.equals(account.getPrimaryOwner())) {
+            return account.getSecondaryOwner();
+        } else if (ApplicationService.currentlyLoggedInUser.equals(account.getSecondaryOwner())) {
+            return account.getPrimaryOwner();
+        }
+
+        return null;
     }
 }

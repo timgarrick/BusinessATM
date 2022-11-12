@@ -4,6 +4,7 @@ import com.timgarrick.account.transaction.Transaction;
 import com.timgarrick.account.transaction.TransactionService;
 import com.timgarrick.application.ApplicationService;
 import com.timgarrick.application.UserInterface;
+import com.timgarrick.user.User;
 import com.timgarrick.user.UserService;
 
 import java.util.ArrayList;
@@ -29,10 +30,16 @@ public class AccountService {
     }
 
     public static void deleteAccount(Account account) {
-        allAccounts.remove(account);
+        account.setPrimaryOwner(null);
+        account.setSecondaryOwner(null);
+        account.setArchived(true);
         UserService.refreshUserAccountList();
     }
 
+    public static void updateSecondaryUser(Account account, User user) {
+        account.setSecondaryOwner(user);
+        UserService.refreshUserAccountList();
+    }
 
 
     public void setAllAccounts(List<Account> allAccounts) {
@@ -66,7 +73,7 @@ public class AccountService {
             UserInterface.outputString("Balance must be greater than 0 to transfer");
             return false;
         } else if (balance <= source.getBalance()) {
-            transactionService.createNewTransferTransaction(ApplicationService.currentlyLoggedInUser,source, target, balance);
+            transactionService.createNewTransferTransaction(ApplicationService.currentlyLoggedInUser,source, target, balance, false);
             return true;
         } else {
             UserInterface.outputString("Unable to transfer £" + balance + " from " + source.getAccountName()
