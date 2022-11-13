@@ -5,6 +5,7 @@ import com.timgarrick.account.AccountService;
 import com.timgarrick.user.User;
 import com.timgarrick.user.UserLogic;
 import com.timgarrick.user.UserService;
+import com.timgarrick.user.usermessage.UserMessageService;
 
 
 public class ApplicationService {
@@ -41,11 +42,18 @@ public class ApplicationService {
                 case 2 -> UserLogic.createNewUserAccount();
             }
 
+
+
             while(currentlyLoggedInUser != null)
             {
                 if(currentlyLoggedInUser.getListOfPrimaryAccounts().size() == 0) {
                     UserInterface.outputString("You have no primary accounts. Please create a new account.");
                     AccountLogic.createNewAccount();
+                }
+
+                while (!UserService.getFlaggedMessages().isEmpty()) {
+                    UserInterface.outputString("You have a action to process on your account");
+                    UserMessageService.processMessage(UserService.getFlaggedMessages().get(0));
                 }
 
                 switch (UserLogic.loggedInUserSelection()) {

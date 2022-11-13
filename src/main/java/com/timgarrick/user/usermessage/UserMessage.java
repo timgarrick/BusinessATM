@@ -8,7 +8,8 @@ import java.util.Date;
 
 public class UserMessage {
     private int messageID;
-    private User user;
+    private User targetUser;
+    private User sentBy;
     private boolean active;
     private Transaction transaction;
     private Account account;
@@ -17,13 +18,14 @@ public class UserMessage {
     private UserMessageType userMessageType;
 
     public UserMessage(int messageID,
-                       boolean read,
-                       User user,
+                       User sentBy, boolean read,
+                       User targetUser,
                        Transaction transaction,
                        Account account,
                        String contextMessage,
                        UserMessageType userMessageType) {
-        this.user = user;
+        this.sentBy = sentBy;
+        this.targetUser = targetUser;
         this.messageID = messageID;
         this.active = read;
         this.transaction = transaction;
@@ -37,8 +39,8 @@ public class UserMessage {
         return messageID;
     }
 
-    public User getUser() {
-        return user;
+    public User getTargetUser() {
+        return targetUser;
     }
 
     public boolean isActive() {

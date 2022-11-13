@@ -6,6 +6,7 @@ import com.timgarrick.util.ModelOutput;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class User implements ModelOutput {
     private int userID;
@@ -24,7 +25,7 @@ public class User implements ModelOutput {
         this.email = email;
         this.listOfPrimaryAccounts = new ArrayList<>();
         this.listOfSecondaryAccounts = new ArrayList<>();
-        this.listOfUserMessages = new ArrayList<>();
+        this.listOfUserMessages = new Stack<>();
     }
 
     public int getUserID() {
