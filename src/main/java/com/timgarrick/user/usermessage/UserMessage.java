@@ -18,7 +18,7 @@ public class UserMessage {
     private UserMessageType userMessageType;
 
     public UserMessage(int messageID,
-                       User sentBy, boolean read,
+                       User sentBy,
                        User targetUser,
                        Transaction transaction,
                        Account account,
@@ -27,7 +27,7 @@ public class UserMessage {
         this.sentBy = sentBy;
         this.targetUser = targetUser;
         this.messageID = messageID;
-        this.active = read;
+        this.active = true;
         this.transaction = transaction;
         this.account = account;
         this.contextMessage = contextMessage;

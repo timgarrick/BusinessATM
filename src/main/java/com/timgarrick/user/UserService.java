@@ -7,6 +7,7 @@ import com.timgarrick.user.usermessage.UserMessage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class UserService {
 
@@ -62,7 +63,7 @@ public class UserService {
     }
 
     public static List<UserMessage> getFlaggedMessages() {
-        List<UserMessage> flaggedMessages = new ArrayList<>();
+        List<UserMessage> flaggedMessages = new Stack<>();
 
         for (UserMessage userMessage:ApplicationService.currentlyLoggedInUser.getListOfUserMessages())
         {

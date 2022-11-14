@@ -1,8 +1,6 @@
 package com.timgarrick.account;
 
-import com.timgarrick.account.transaction.Transaction;
 import com.timgarrick.account.transaction.TransactionService;
-import com.timgarrick.application.ApplicationService;
 import com.timgarrick.application.UserInterface;
 import com.timgarrick.user.User;
 import com.timgarrick.user.UserService;
@@ -95,30 +93,6 @@ public class AccountService {
         return null;
     }
 
-    public static void showAccountTransactionHistory(Account account) {
-        if (account.getAccountTransactions() != null) {
-            for (Transaction transaction:account.getAccountTransactions()) {
-                //
-                //method to grab first message (fifo)
-            }
 
-        } else {
-            UserInterface.outputString("No account transactions for this account");
-        }
-    }
-
-    public boolean transferFromSourceToTarget(Account source, Account target, double balance) {
-        if (balance < 0) {
-            UserInterface.outputString("Balance must be greater than 0 to transfer");
-            return false;
-        } else if (balance <= source.getBalance()) {
-            transactionService.createNewTransferTransaction(ApplicationService.currentlyLoggedInUser,source, target, balance, false);
-            return true;
-        } else {
-            UserInterface.outputString("Unable to transfer £" + balance + " from " + source.getAccountName()
-                                        + " to " + target.getAccountName());
-            return false;
-        }
-    }
 
 }

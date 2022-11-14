@@ -43,13 +43,8 @@ public class ApplicationService {
             }
 
 
-
             while(currentlyLoggedInUser != null)
             {
-                if(currentlyLoggedInUser.getListOfPrimaryAccounts().size() == 0) {
-                    UserInterface.outputString("You have no primary accounts. Please create a new account.");
-                    AccountLogic.createNewAccount();
-                }
 
                 while (UserService.getFlaggedMessages().size() > 0) {
                     UserInterface.outputString("You have a action to process on your account");

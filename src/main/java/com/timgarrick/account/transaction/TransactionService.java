@@ -39,12 +39,18 @@ public class TransactionService {
     }
 
     public static Transaction createNewWithdrawTransaction(User transactionOwner,
-                                                   Account sourceAccount,
-                                                   double transaction, boolean pending) {
+                                                           Account sourceAccount,
+                                                           double transaction,
+                                                           boolean pending) {
 
 
-        Transaction withdrawTransaction = new Transaction(allTransactionList, sourceAccount, null,
-                transactionOwner, transaction, TransactionType.WITHDRAWAL, pending);
+        Transaction withdrawTransaction = new Transaction(allTransactionList,
+                                                        sourceAccount,
+                                                        null,
+                                                        transactionOwner,
+                                                        transaction,
+                                                        TransactionType.WITHDRAWAL,
+                                                        pending);
 
         return confirmTransaction(withdrawTransaction);
     }
@@ -55,12 +61,12 @@ public class TransactionService {
 
             if (transaction.getSourceAccount() != null ) {
                 transaction.getSourceAccount().getAccountTransactions().add(transaction);
-                transaction.getSourceAccount().updateBalanceAfterTransaction();
+                transaction.getSourceAccount().buildBalanceFromTransactions();
             }
 
             if (transaction.getTargetAccount() != null ) {
                 transaction.getTargetAccount().getAccountTransactions().add(transaction);
-                transaction.getTargetAccount().updateBalanceAfterTransaction();
+                transaction.getTargetAccount().buildBalanceFromTransactions();
             }
 
             allTransactionList.add(transaction);

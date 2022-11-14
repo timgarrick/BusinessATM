@@ -2,7 +2,7 @@ package com.timgarrick.util;
 
 import javax.swing.*;
 
-public class SwingGUI{
+public class SwingGUI extends JFrame {
     public static void showWindow(String bankName){
         JFrame frame = new JFrame(bankName);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

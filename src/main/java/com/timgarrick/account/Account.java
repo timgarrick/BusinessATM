@@ -4,9 +4,9 @@ import com.timgarrick.account.transaction.Transaction;
 import com.timgarrick.user.User;
 import com.timgarrick.util.ModelOutput;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Stack;
 
 public class Account implements ModelOutput {
     private int AccountID;
@@ -15,7 +15,7 @@ public class Account implements ModelOutput {
     private User primaryOwner;
     private User secondaryOwner;
     private double balance;
-    private List<Transaction> accountTransactions;
+    private Stack<Transaction> accountTransactions;
     private Date dateCreated;
 
     private boolean archived;
@@ -25,7 +25,7 @@ public class Account implements ModelOutput {
         this.accountName = accountName;
         this.accountType = accountType;
         this.balance = 0;
-        this.accountTransactions = new ArrayList<>();
+        this.accountTransactions = new Stack<>();
         this.dateCreated = new Date();
         this.archived = false;
     }
@@ -92,7 +92,7 @@ public class Account implements ModelOutput {
         return accountTransactions;
     }
 
-    public void setAccountTransactions(List<Transaction> accountTransactions) {
+    public void setAccountTransactions(Stack<Transaction> accountTransactions) {
         this.accountTransactions = accountTransactions;
     }
 
@@ -115,17 +115,48 @@ public class Account implements ModelOutput {
             secondaryOwnerName = this.getSecondaryOwner().getUsername();
         }
 
-        return "ID: " + AccountID +
-                ", Name: " + accountName +
+        return "Name: " + accountName +
                 ", Type: " + accountType.getAccountName() +
                 ", Primary Owner: " + primaryOwner.getUsername() +
                 ", Secondary Owner: " + secondaryOwnerName +
-                ", Balance including overdraft: £" + getBalanceIncludingOverdraft();
+                ", Balance: £" + getBalance() +
+                ", Overdraft: £" + getAccountType().getAccountOverdraft() +
+                ", Total: £" + getBalanceIncludingOverdraft();
     }
 
-    public void updateBalanceAfterTransaction() {
+    public void buildBalanceFromTransactions() {
+        setBalance(0);
 
-        this.balance += accountTransactions.get(accountTransactions.size()-1).getAccountTransaction();
+        for (Transaction transaction : accountTransactions) {
+            switch (transaction.getTransactionType()) {
+
+                case TRANSFER -> {
+                    if (transaction.getSourceAccount().equals(this)) {
+                        this.balance -= transaction.getAccountTransaction();
+                    } else if (transaction.getTargetAccount().equals(this)) {
+                        this.balance += transaction.getAccountTransaction();
+                    } else {
+                        /*throw new TransactionException("Could not calculate balance within buildBalanceFromTransactions. " +
+                                "Could not find source and target account. ID: " + transaction.getTransactionID());*/
+                    }
+                }
+                case WITHDRAWAL -> {
+                    try {
+                        this.balance -= transaction.getAccountTransaction();
+                    } catch (Exception e) {
+                        //throw new TransactionException("Could not calculate balance after withdrawal. ID" + transaction.getTransactionID());
+                    }
+                }
+                case DEPOSIT -> {
+                    try {
+                        this.balance += transaction.getAccountTransaction();
+                    } catch (Exception e) {
+                        //throw new TransactionException("Could not calculate balance after deposit. ID" + transaction.getTransactionID());
+                    }
+                }
+
+            }
+        }
     }
 
     @Override

@@ -13,10 +13,20 @@ import java.util.List;
 public class UserMessageService {
     private static List<UserMessage> allMessages = new ArrayList<>();
 
-    public static UserMessage createUserMessage(User targetUser, User sentBy, Transaction transaction, Account account, String message,
+    public static UserMessage createUserMessage(User targetUser,
+                                                User sentBy,
+                                                Transaction transaction,
+                                                Account account,
+                                                String message,
                                                 UserMessageType userMessageType) {
         int id = allMessages.size()+1;
-        UserMessage newUserMessage = new UserMessage(id, sentBy, false, targetUser, transaction, account, message, userMessageType);
+        UserMessage newUserMessage = new UserMessage(id,
+                                                    sentBy,
+                                                    targetUser,
+                                                    transaction,
+                                                    account,
+                                                    message,
+                                                    userMessageType);
 
         allMessages.add(newUserMessage);
         targetUser.getListOfUserMessages().add(newUserMessage);
@@ -24,7 +34,7 @@ public class UserMessageService {
         return newUserMessage;
     }
 
-    public static boolean processMessage(UserMessage message) {
+    public static boolean processMessage(UserMessage message){
 
         switch (message.getUserMessageType()) {
             case JOINT_ACCOUNT_CREATION_REQUEST -> {
@@ -42,6 +52,7 @@ public class UserMessageService {
             }
             case JOINT_ACCOUNT_TRANSACTION_REQUEST -> {
                 if (AccountService.processJointAccountTransactionRequest(message)) {
+                    message.getTransaction().setPending(false);
                     TransactionService.confirmTransaction(message.getTransaction());
                 }
                 message.setActive(false);

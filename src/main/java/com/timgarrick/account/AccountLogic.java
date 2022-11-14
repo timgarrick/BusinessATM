@@ -86,21 +86,15 @@ public class AccountLogic {
 
 
         for (Account account : ApplicationService.currentlyLoggedInUser.getListOfPrimaryAccounts()) {
-            accountListNames.add(account.getAccountName() + " ( "
-                            + account.getAccountType().getAccountName()
-                            + ", primary), total balance including overdraft: £"
-                            + (account.getBalance()
-                            + account.getAccountType().getAccountOverdraft()));
 
+            accountListNames.add(account.toString());
             accountList.add(account);
 
         }
 
 
         for (Account account : ApplicationService.currentlyLoggedInUser.getListOfSecondaryAccounts()) {
-            accountListNames.add(account.getAccountName() + " ( "
-                        + account.getAccountType().getAccountName() + ", secondary), total balance including overdraft: £"
-                        + (account.getBalance() + account.getAccountType().getAccountOverdraft()));
+            accountListNames.add(account.toString());
 
             accountList.add(account);
 
@@ -131,11 +125,9 @@ public class AccountLogic {
                 case 1 -> manageSpecificAccountWithdraw(account);
                 case 2 -> manageSpecificAccountDeposit(account);
                 case 3 -> manageSpecificAccountTransfer(account);
-                case 4 -> manageSpecificAccountAddUserAsJoint(account);
-                case 5 -> manageSpecificAccountDeleteAccount(account);
+                case 4 -> manageSpecificAccountAddUserAsJoint(account); //working
+                case 5 -> manageSpecificAccountDeleteAccount(account); //working
             }
-
-
         }
     }
 
@@ -148,19 +140,27 @@ public class AccountLogic {
 
         if (account.getSecondaryOwner() != null) {
             UserInterface.outputString("Permission from joint account holder is required before account can be deleted");
-            UserInterface.outputString("A request to "
-                                        + account.getSecondaryOwner().getUsername() + " ("
-                                        + account.getSecondaryOwner().getEmail() + ") has been sent");
-        }
+            UserInterface.outputString("A request to " + getSecondAccountOwner(account).friendlyName() + " has been sent");
+            UserMessageService.createUserMessage(getSecondAccountOwner(account),
+                                                ApplicationService.currentlyLoggedInUser,
+                                                null,
+                                                account,
+                                                UserInterface.inputString("Enter a message for this request"),
+                                                UserMessageType.JOINT_ACCOUNT_DELETION_REQUEST);
 
-        String accountToBeDeleted = UserInterface.inputString("Please type \"Yes\" to confirm deletion");
-
-        if (accountToBeDeleted.equalsIgnoreCase("yes")) {
-            AccountService.deleteAccount(account);
-            return true;
-        } else {
-            UserInterface.outputString("Account was not deleted");
             return false;
+
+        } else {
+
+            String accountToBeDeleted = UserInterface.inputString("Please type \"Yes\" to confirm deletion");
+
+            if (accountToBeDeleted.equalsIgnoreCase("yes")) {
+                AccountService.deleteAccount(account);
+                return true;
+            } else {
+                UserInterface.outputString("Account was not deleted");
+                return false;
+            }
         }
     }
 
@@ -169,10 +169,16 @@ public class AccountLogic {
         User userToBeAdded = UserService.findUser(inputString);
         if (userToBeAdded != null) {
 
+            String message = UserInterface.inputString("Enter a message for this request");
+
             UserInterface.outputString("User " + userToBeAdded.getUsername() + " (" + userToBeAdded.getEmail()
             + ") has been sent a request to become the joint owner of this account");
-            userToBeAdded.setJointAccountCreationRequest(account);
-
+            UserMessageService.createUserMessage(userToBeAdded,
+                    ApplicationService.currentlyLoggedInUser,
+                    null,
+                    account,
+                    message,
+                    UserMessageType.JOINT_ACCOUNT_CREATION_REQUEST);
         } else {
             UserInterface.outputString("User " + inputString + " not found");
         }
@@ -234,19 +240,18 @@ public class AccountLogic {
         }
 
         if (account.getSecondaryOwner() != null) {
-            if (withdrawAmount > (totalBalanceIncludingOverdraft / 0.2)) {
+            if (withdrawAmount > (totalBalanceIncludingOverdraft * 0.2)) {
                 Transaction pendingTransaction = TransactionService.createNewWithdrawTransaction(
-                        ApplicationService.currentlyLoggedInUser, account,-withdrawAmount,true);
+                        ApplicationService.currentlyLoggedInUser, account,withdrawAmount,true);
 
                 UserInterface.outputString("You will need approval from " + getSecondAccountOwner(account).friendlyName()
-                                            + ") to withdraw more than 20% of the remaining balance from this account. " +
+                                            + " to withdraw more than 20% of the remaining balance from this account. " +
                                             "Would you like to proceed?");
 
-                if(UserInterface.userOptionSelection("Confirm withdrawal#Cancel request") == 1) {
+                if(UserInterface.userOptionSelection("Confirm withdrawal") == 1) {
                     UserInterface.outputString("A pending transaction has been created with ID: " +
                             pendingTransaction.getTransactionID() + " and a request will be sent to " +
-                            getSecondAccountOwner(account).getUsername() + " (" +
-                            getSecondAccountOwner(account).getEmail() + ")");
+                            getSecondAccountOwner(account).friendlyName() + " for approval");
 
                     String messageString = UserInterface.inputString("Enter a message for this request: ");
 
@@ -255,13 +260,14 @@ public class AccountLogic {
                             account,messageString, UserMessageType.JOINT_ACCOUNT_TRANSACTION_REQUEST);
                     return true;
                 } else {
+                    UserInterface.outputString("Withdrawal cancelled");
                     return false;
                 }
             }
         }
 
         TransactionService.createNewWithdrawTransaction(ApplicationService.currentlyLoggedInUser,account,
-                                                -withdrawAmount,false);
+                                                withdrawAmount,false);
 
         UserInterface.outputString("£" + withdrawAmount + " withdrawn from account. Current balance: £"
                                     + account.getBalance());

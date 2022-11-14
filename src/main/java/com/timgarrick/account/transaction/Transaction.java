@@ -72,6 +72,10 @@ public class Transaction {
         return pending;
     }
 
+    public void setPending(boolean pending) {
+        this.pending = pending;
+    }
+
     @Override
     public String toString() {
         return transactionID + ": " +

@@ -4,6 +4,7 @@ import com.timgarrick.account.AccountService;
 import com.timgarrick.account.transaction.TransactionService;
 import com.timgarrick.application.ApplicationService;
 import com.timgarrick.application.UserInterface;
+import com.timgarrick.exceptions.TransactionException;
 import com.timgarrick.user.usermessage.UserMessage;
 
 public class UserLogic {
@@ -23,8 +24,7 @@ public class UserLogic {
         UserInterface.outputString("");
     }
 
-    public static void checkUserMessageFlags()
-    {
+    public static void checkUserMessageFlags() throws TransactionException {
 
         for (UserMessage activeMessage:ApplicationService.currentlyLoggedInUser.getListOfUserMessages()) {
 
@@ -191,9 +191,6 @@ public class UserLogic {
     }
 
     public static boolean loginUser() {
-        //LoginBox loginBox = new LoginBox();
-        //loginBox.showWindow();
-
 
         String username = UserInterface.inputString("Please enter your username or ID");
         String password = UserInterface.inputString("Please enter the password for this account");
