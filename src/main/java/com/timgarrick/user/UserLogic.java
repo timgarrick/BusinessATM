@@ -32,8 +32,6 @@ public class UserLogic {
 
                 case JOINT_ACCOUNT_CREATION_REQUEST -> {
 
-                    //jointAccountRequestMessageText("Joint account creation");
-
                     UserInterface.outputString("Joint account request for "
                             + activeMessage.getAccount().getAccountName() + " from "
                             + activeMessage.getAccount().getPrimaryOwner() + " ("
@@ -201,7 +199,8 @@ public class UserLogic {
         String password = UserInterface.inputString("Please enter the password for this account");
         if (validateUserAgainstUserList(username, password)) {
             UserInterface.outputString("Logged into account " + ApplicationService.currentlyLoggedInUser.getUsername() + " successfully");
-            UserLogic.checkUserMessageFlags();
+            //UserLogic.checkUserMessageFlags();
+            UserService.refreshUserAccountList();
             return true;
         }
 

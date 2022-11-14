@@ -14,6 +14,7 @@ import java.util.List;
 
 public class AccountLogic {
 
+    static Account activeAccount = null;
 
     public static void createNewAccount() {
 
@@ -24,14 +25,12 @@ public class AccountLogic {
 
 
             for (AccountType accountType:AccountType.values()) {
-                System.out.println("Looping through account types, should be 3 times" + accountType.getAccountName());
 
                 listOfAvailableAccountsTypes.add(accountType);
 
                 //loop through all accounts
                 for (Account account:ApplicationService.currentlyLoggedInUser.getListOfPrimaryAccounts()) {
                     if (account.getAccountType().equals(accountType)) {
-                        System.out.println("Account type in list of user accounts matched");
                         listOfAvailableAccountsTypes.remove(accountType);
                     }
                 }
@@ -64,7 +63,6 @@ public class AccountLogic {
 
     public static void manageExistingAccount() {
         boolean manageExistingAccountsWindowIsOpen = true;
-        Account activeAccount = null;
 
         while (manageExistingAccountsWindowIsOpen) {
 
@@ -89,8 +87,10 @@ public class AccountLogic {
 
         for (Account account : ApplicationService.currentlyLoggedInUser.getListOfPrimaryAccounts()) {
             accountListNames.add(account.getAccountName() + " ( "
-                    + account.getAccountType().getAccountName() + ", primary), total balance including overdraft: £"
-                    + (account.getBalance() + account.getAccountType().getAccountOverdraft()));
+                            + account.getAccountType().getAccountName()
+                            + ", primary), total balance including overdraft: £"
+                            + (account.getBalance()
+                            + account.getAccountType().getAccountOverdraft()));
 
             accountList.add(account);
 
@@ -105,7 +105,6 @@ public class AccountLogic {
             accountList.add(account);
 
         }
-
 
         int userSelection = UserInterface.userOptionSelection(accountListNames);
 
@@ -251,7 +250,8 @@ public class AccountLogic {
 
                     String messageString = UserInterface.inputString("Enter a message for this request: ");
 
-                    UserMessageService.createUserMessage(getSecondAccountOwner(account),pendingTransaction,
+                    UserMessageService.createUserMessage(getSecondAccountOwner(account),
+                            ApplicationService.currentlyLoggedInUser,pendingTransaction,
                             account,messageString, UserMessageType.JOINT_ACCOUNT_TRANSACTION_REQUEST);
                     return true;
                 } else {

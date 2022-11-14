@@ -51,9 +51,9 @@ public class ApplicationService {
                     AccountLogic.createNewAccount();
                 }
 
-                while (!UserService.getFlaggedMessages().isEmpty()) {
+                while (UserService.getFlaggedMessages().size() > 0) {
                     UserInterface.outputString("You have a action to process on your account");
-                    UserMessageService.processMessage(UserService.getFlaggedMessages().get(0));
+                    UserMessageService.processMessage(UserService.getFlaggedMessages().remove(0));
                 }
 
                 switch (UserLogic.loggedInUserSelection()) {

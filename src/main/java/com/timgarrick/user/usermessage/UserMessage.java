@@ -70,4 +70,8 @@ public class UserMessage {
     public UserMessageType getUserMessageType() {
         return userMessageType;
     }
+
+    public User getSentBy() {
+        return sentBy;
+    }
 }

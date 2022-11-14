@@ -39,7 +39,7 @@ public class UserService {
     }
 
     public static void refreshUserAccountList() {
-        int userID = ApplicationService.currentlyLoggedInUser.getUserID();
+
         ApplicationService.currentlyLoggedInUser.setListOfPrimaryAccounts(null);
         ApplicationService.currentlyLoggedInUser.setListOfSecondaryAccounts(null);
 
@@ -47,14 +47,12 @@ public class UserService {
         List<Account> newSecondaryAccountList = new ArrayList<>();
 
         for (Account account: AccountService.getAllAccounts()) {
-            if (userID == account.getPrimaryOwner().getUserID()) {
+            if (account.getPrimaryOwner() != null && account.getPrimaryOwner().equals(ApplicationService.currentlyLoggedInUser)) {
                 newPrimaryAccountList.add(account);
             }
 
-            if (account.getSecondaryOwner() != null) {
-                if (userID == account.getSecondaryOwner().getUserID()) {
-                    newSecondaryAccountList.add(account);
-                }
+            if (account.getSecondaryOwner() != null && account.getSecondaryOwner().equals(ApplicationService.currentlyLoggedInUser)) {
+                newSecondaryAccountList.add(account);
             }
         }
 
@@ -77,5 +75,4 @@ public class UserService {
         return flaggedMessages;
 
     }
-
 }

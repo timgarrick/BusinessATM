@@ -3,7 +3,8 @@ package com.timgarrick.user.usermessage;
 import com.timgarrick.account.Account;
 import com.timgarrick.account.AccountService;
 import com.timgarrick.account.transaction.Transaction;
-import com.timgarrick.application.UserInterface;
+import com.timgarrick.account.transaction.TransactionService;
+import com.timgarrick.application.ApplicationService;
 import com.timgarrick.user.User;
 
 import java.util.ArrayList;
@@ -27,19 +28,26 @@ public class UserMessageService {
 
         switch (message.getUserMessageType()) {
             case JOINT_ACCOUNT_CREATION_REQUEST -> {
-                if (AccountService.processJointAccountCreationRequest()) {
-                    //read message, delete message from user list
+                if (AccountService.processJointAccountCreationRequest(message)) {
+                    AccountService.updateSecondaryUser(message.getAccount(),ApplicationService.currentlyLoggedInUser);
                 }
-                UserInterface.outputString(message.getTargetUser() );
+                message.setActive(false);
             }
             case JOINT_ACCOUNT_DELETION_REQUEST -> {
-                AccountService.processJointAccountDeletionRequest();
+                if (AccountService.processJointAccountDeletionRequest(message)) {
+                    AccountService.deleteAccount(message.getAccount());
+                }
+                message.setActive(false);
 
             }
             case JOINT_ACCOUNT_TRANSACTION_REQUEST -> {
-                AccountService.processJointAccountTransactionRequest();
-
+                if (AccountService.processJointAccountTransactionRequest(message)) {
+                    TransactionService.confirmTransaction(message.getTransaction());
+                }
+                message.setActive(false);
             }
         }
+        return true;
+
     }
 }

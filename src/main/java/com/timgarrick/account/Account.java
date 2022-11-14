@@ -120,8 +120,7 @@ public class Account implements ModelOutput {
                 ", Type: " + accountType.getAccountName() +
                 ", Primary Owner: " + primaryOwner.getUsername() +
                 ", Secondary Owner: " + secondaryOwnerName +
-                ", Balance: £" + balance +
-                ", Overdraft: £" + getAccountType().getAccountOverdraft();
+                ", Balance including overdraft: £" + getBalanceIncludingOverdraft();
     }
 
     public void updateBalanceAfterTransaction() {
