@@ -96,16 +96,6 @@ public class Account implements ModelOutput {
         this.accountTransactions = accountTransactions;
     }
 
-/*    public void updateBalance() {
-        for (Transaction transaction:accountTransactions) {
-
-            if (transaction.getSourceAccount().getAccountID() == this.AccountID)) {
-                balance+= transaction.getAccountTransaction();
-            }
-
-        }
-    }*/
-
     @Override
     public String toString() {
         String secondaryOwnerName;
@@ -135,24 +125,13 @@ public class Account implements ModelOutput {
                         this.balance -= transaction.getAccountTransaction();
                     } else if (transaction.getTargetAccount().equals(this)) {
                         this.balance += transaction.getAccountTransaction();
-                    } else {
-                        /*throw new TransactionException("Could not calculate balance within buildBalanceFromTransactions. " +
-                                "Could not find source and target account. ID: " + transaction.getTransactionID());*/
                     }
                 }
                 case WITHDRAWAL -> {
-                    try {
-                        this.balance -= transaction.getAccountTransaction();
-                    } catch (Exception e) {
-                        //throw new TransactionException("Could not calculate balance after withdrawal. ID" + transaction.getTransactionID());
-                    }
+                    this.balance -= transaction.getAccountTransaction();
                 }
                 case DEPOSIT -> {
-                    try {
-                        this.balance += transaction.getAccountTransaction();
-                    } catch (Exception e) {
-                        //throw new TransactionException("Could not calculate balance after deposit. ID" + transaction.getTransactionID());
-                    }
+                    this.balance += transaction.getAccountTransaction();
                 }
 
             }

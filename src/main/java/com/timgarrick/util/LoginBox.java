@@ -1,6 +1,6 @@
 package com.timgarrick.util;
 
-import com.timgarrick.user.UserLogic;
+import com.timgarrick.user.UserService;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -50,7 +50,7 @@ public class LoginBox extends JDialog {
     }
 
     private void onOK() {
-        if(UserLogic.validateUserAgainstUserList(usernameTextField.getText(), passwordFormattedTextField.getText())) {
+        if(UserService.validateUserAgainstUserList(usernameTextField.getText(), passwordFormattedTextField.getText())) {
 
             dispose();
         } else {

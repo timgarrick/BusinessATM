@@ -79,4 +79,19 @@ public class TransactionService {
 
         return transaction;
     }
+
+    public static void outputListOfTransactions(Account account, int numberOfTransactions) {
+
+        if (numberOfTransactions > account.getAccountTransactions().size()) {
+            numberOfTransactions = account.getAccountTransactions().size();
+        }
+
+        for (int i = numberOfTransactions; i > 0; i--) {
+            UserInterface.outputString(account.getAccountTransactions().get(i-1).toStringByDate());
+        }
+    }
+
+    public static void outputListOfTransactions(Account account) {
+        outputListOfTransactions(account, account.getAccountTransactions().size());
+    }
 }

@@ -3,6 +3,7 @@ package com.timgarrick.account.transaction;
 import com.timgarrick.account.Account;
 import com.timgarrick.user.User;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -83,8 +84,27 @@ public class Transaction {
                 accountTransaction + " from "+
                 sourceAccount + " to "+
                 targetAccount + ". Transaction requested by "+
-                transactionOwner + " (" +
+                transactionOwner.getUsername() + " (" +
                 accountTransactionDate + ")";
+    }
+
+    public String toStringByDate() {
+        String friendlyDate = "HH:mm:ss DD-mm-yyyy";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(friendlyDate);
+        String date = simpleDateFormat.format(this.accountTransactionDate);
+        String transferText = "£" + getAccountTransaction();
+        switch (transactionType) {
+            case TRANSFER ->
+                transferText += " transferred from " + getSourceAccount().getAccountName() + " to "
+                        + getTargetAccount().getAccountName() + ".";
+
+            case WITHDRAWAL -> transferText += " withdrawn.";
+
+            case DEPOSIT -> transferText += " deposited";
+        }
+
+        return date + ": " + transactionType.getFriendlyName() + ": " + transferText;
+
     }
 
 

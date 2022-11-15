@@ -1,9 +1,7 @@
 package com.timgarrick.application;
 
-import com.timgarrick.account.AccountLogic;
 import com.timgarrick.account.AccountService;
 import com.timgarrick.user.User;
-import com.timgarrick.user.UserLogic;
 import com.timgarrick.user.UserService;
 import com.timgarrick.user.usermessage.UserMessageService;
 
@@ -34,12 +32,12 @@ public class ApplicationService {
 
         while(applicationIsRunning) {
 
-            UserLogic.welcomeUser();
+            UserService.welcomeUser();
 
-            switch (UserLogic.initialUserSelection()) {
+            switch (UserService.initialUserSelection()) {
                 case 0 -> applicationIsRunning = false;
-                case 1 -> UserLogic.loginUser();
-                case 2 -> UserLogic.createNewUserAccount();
+                case 1 -> UserService.loginUser();
+                case 2 -> UserService.createNewUserAccount();
             }
 
 
@@ -51,11 +49,11 @@ public class ApplicationService {
                     UserMessageService.processMessage(UserService.getFlaggedMessages().remove(0));
                 }
 
-                switch (UserLogic.loggedInUserSelection()) {
+                switch (UserService.loggedInUserSelection()) {
                     case 0 -> currentlyLoggedInUser = null;
-                    case 1 -> UserLogic.manageUserAccount();
-                    case 2 -> AccountLogic.createNewAccount();
-                    case 3 -> AccountLogic.manageExistingAccount();
+                    case 1 -> UserService.manageUserAccount();
+                    case 2 -> AccountService.createNewAccount();
+                    case 3 -> AccountService.manageExistingAccount();
                 }
             }
         }
