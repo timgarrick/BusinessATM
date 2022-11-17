@@ -14,8 +14,3 @@ Users should be able to Check the balance  of their accounts as well as make wit
 other accounts that they own.
 
 =========
-
-To do:
-1 - Currently Logged in user needs to be a list of authenticated logged in users
-2 - Passwords need to be hashed then stored. When changing password or logging in, the hash needs to be compared to 
-the stored password
