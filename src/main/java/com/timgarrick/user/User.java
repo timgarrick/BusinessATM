@@ -16,8 +16,6 @@ public class User implements ModelOutput {
     private List<Account> listOfPrimaryAccounts;
     private List<Account> listOfSecondaryAccounts;
     private List<UserMessage> listOfUserMessages;
-    private int jointAccountCreationRequest = 0;
-    private int jointAccountDeletionRequest = 0;
 
     public User(String username, String password, String email) {
         this.username = username;
@@ -78,26 +76,6 @@ public class User implements ModelOutput {
 
     public void setListOfSecondaryAccounts(List<Account> listOfSecondaryAccounts) {
         this.listOfSecondaryAccounts = listOfSecondaryAccounts;
-    }
-
-    public int getJointAccountCreationRequest() {
-        return jointAccountCreationRequest;
-    }
-
-    public void setJointAccountCreationRequest(Account jointAccountCreationRequest) {
-        this.jointAccountCreationRequest = jointAccountCreationRequest.getAccountID();
-    }
-
-    public void setJointAccountCreationRequest(int jointAccountCreationRequest) {
-        this.jointAccountCreationRequest = jointAccountCreationRequest;
-    }
-
-    public int getJointAccountDeletionRequest() {
-        return jointAccountDeletionRequest;
-    }
-
-    public void setJointAccountDeletionRequest(int jointAccountDeletionRequest) {
-        this.jointAccountDeletionRequest = jointAccountDeletionRequest;
     }
 
     @Override

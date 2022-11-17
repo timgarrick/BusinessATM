@@ -140,6 +140,11 @@ public class Account implements ModelOutput {
 
     @Override
     public String userSelectionOutput() {
-        return "Account name: " + this.getAccountName() + ", account type: " + this.accountType.getAccountName();
+        return "Account name: " + friendlyName() + ", account type: " + this.accountType.getAccountName();
+    }
+
+    @Override
+    public String friendlyName() {
+        return this.getAccountName();
     }
 }

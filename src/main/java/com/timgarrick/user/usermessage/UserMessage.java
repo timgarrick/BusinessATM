@@ -3,10 +3,11 @@ package com.timgarrick.user.usermessage;
 import com.timgarrick.account.Account;
 import com.timgarrick.account.transaction.Transaction;
 import com.timgarrick.user.User;
+import com.timgarrick.util.ModelOutput;
 
 import java.util.Date;
 
-public class UserMessage {
+public class UserMessage implements ModelOutput {
     private int messageID;
     private User targetUser;
     private User sentBy;
@@ -73,5 +74,15 @@ public class UserMessage {
 
     public User getSentBy() {
         return sentBy;
+    }
+
+    @Override
+    public String userSelectionOutput() {
+        return this.getMessageID() + ": " + friendlyName();
+    }
+
+    @Override
+    public String friendlyName() {
+        return getUserMessageType() + " message request from " + getSentBy() + " to " + getTargetUser();
     }
 }

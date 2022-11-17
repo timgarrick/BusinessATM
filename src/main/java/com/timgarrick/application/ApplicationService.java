@@ -5,7 +5,6 @@ import com.timgarrick.user.User;
 import com.timgarrick.user.UserService;
 import com.timgarrick.user.usermessage.UserMessageService;
 
-
 public class ApplicationService {
     public static String bankName;
     public static User currentlyLoggedInUser = null;
@@ -19,16 +18,6 @@ public class ApplicationService {
     }
 
     public void run() {
-
-        //MainWindow.showWindow();
-
-
-        User tim = new User("tim", "tim", "tim");
-        User roya = new User("roya", "roya", "roya");
-
-        UserService.createUser(tim);
-        UserService.createUser(roya);
-
 
         while(applicationIsRunning) {
 

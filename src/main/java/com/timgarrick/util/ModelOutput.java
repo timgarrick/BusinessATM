@@ -1,5 +1,6 @@
 package com.timgarrick.util;
 
 public interface ModelOutput {
-    public String userSelectionOutput();
+    String userSelectionOutput();
+    String friendlyName();
 }

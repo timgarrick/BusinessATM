@@ -71,11 +71,13 @@ public class AccountService {
 
         }
 
-        return UserInterface.userOptionSelection("Accept request?") == 1;
+        return UserInterface.userOptionSelection("Accept request") == 1;
     }
 
     public static void createNewAccount() {
 
+
+        //Create 1 of each account type, regardless of the number of account types.
         if (ApplicationService.currentlyLoggedInUser.getListOfPrimaryAccounts().size() < AccountType.values().length) {
 
             List<AccountType> listOfAvailableAccountsTypes = new ArrayList<>();
@@ -86,7 +88,6 @@ public class AccountService {
 
                 listOfAvailableAccountsTypes.add(accountType);
 
-                //loop through all accounts
                 for (Account account:ApplicationService.currentlyLoggedInUser.getListOfPrimaryAccounts()) {
                     if (account.getAccountType().equals(accountType)) {
                         listOfAvailableAccountsTypes.remove(accountType);
@@ -111,10 +112,12 @@ public class AccountService {
             createAccount(new Account(accountName, listOfAvailableAccountsTypes.get(accountSelection-1),
                                             ApplicationService.currentlyLoggedInUser));
             UserService.refreshUserAccountList();
+            UserInterface.outputString("Account successfully created");
 
         } else {
             UserInterface.outputString("You have the maximum number of primary accounts.");
         }
+
 
 
     }

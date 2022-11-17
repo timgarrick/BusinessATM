@@ -24,5 +24,61 @@ public class AccountServiceTests {
         assertNotNull(clientTestAccount);
     }
 
+    @Test
+    void createAccount() {
+    }
+
+    @Test
+    void getAllAccounts() {
+    }
+
+    @Test
+    void deleteAccount() {
+    }
+
+    @Test
+    void testDeleteAccount() {
+    }
+
+    @Test
+    void updateSecondaryUser() {
+    }
+
+    @Test
+    void processJointAccountCreationRequest() {
+    }
+
+    @Test
+    void processJointAccountDeletionRequest() {
+    }
+
+    @Test
+    void processJointAccountTransactionRequest() {
+    }
+
+    @Test
+    void createNewAccount() {
+    }
+
+    @Test
+    void manageExistingAccount() {
+    }
+
+    @Test
+    void selectAccountFromListOfAllAccounts() {
+    }
+
+    @Test
+    void listExistingAccount() {
+    }
+
+    @Test
+    void setAllAccounts() {
+    }
+
+    @Test
+    void findAccountByID() {
+    }
+
 
 }
